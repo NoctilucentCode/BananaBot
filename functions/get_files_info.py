@@ -15,13 +15,13 @@ def get_files_info(working_directory: str, directory: str = ".") -> str:
         if directory is not None and not os.path.isdir(target_directory):
             return(f'Error: "{directory}" is not a directory')
         else:
-            if valid_target_dir == True:
-                for file in os.listdir(target_directory):
-                    file_path = os.path.join(target_directory, file)
-                    if os.path.isfile(file_path):
-                        file_size = os.path.getsize(file_path)
-                        print(f'File: {file} - Size: {file_size} bytes')
-                    if os.path.isdir(file_path):
-                        print(f'Directory: {file}')
+            file_lines = []
+            for file in os.listdir(target_directory):
+                file_path = os.path.join(target_directory, file)
+                is_dir = os.path.isdir(file_path)
+                file_size = os.path.getsize(file_path)
+                file_lines.append(f"  - {file}: file_size={file_size} bytes, is_dir={is_dir}")
+            return '\n'.join(file_lines)
+
     except Exception as e:
         return(f'Error: {str(e)}')
