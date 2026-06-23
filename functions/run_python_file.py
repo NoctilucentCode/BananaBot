@@ -1,6 +1,35 @@
 ### Import Libraries ###
 import os
 import subprocess
+from google import genai
+from google.genai import types
+
+
+### Define the schema used with Gemini API ###
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Executes a Python file in the specified directory with given arguments",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
+            ),
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the Python file to execute, relative to the specified directory",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                items=types.Schema(
+                    type=types.Type.STRING
+                ),
+                description="Arguments to pass to the Python file",
+            ),
+        },
+    ),
+)
 
 
 ### Python File Execution Function ###

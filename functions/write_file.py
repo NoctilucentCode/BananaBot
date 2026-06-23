@@ -1,5 +1,31 @@
 ### Import Libraries ###
 import os
+from google import genai
+from google.genai import types
+
+
+### Define the schema used with Gemini API ###
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes content to a specified file relative to the working directory",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="Directory path to write the file to, relative to the working directory (default is the working directory itself)",
+            ),
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the file to write, relative to the specified directory",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="Content to write to the file",
+            ),
+        },
+    ),
+)
 
 
 ### File Writing Function ###

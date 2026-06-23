@@ -1,6 +1,24 @@
 ### Import Libraries ###
 import os
+from google import genai
+from google.genai import types
 config_limit = 10000  # Maximum number of characters to read from a file
+
+
+### Define the schema used with Gemini API ###
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Retrieves the content of a specified file relative to the working directory",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
+            ),
+        },
+    ),
+)
 
 
 ### File Content Function ###

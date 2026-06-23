@@ -7,6 +7,9 @@ import os
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+from prompts import system_prompt
+from call_function import available_functions
+model_name = "gemini-2.5-flash"
 
 ### Parse Command Line Arguments ###
 parser = argparse.ArgumentParser(description="Bananabot - A simple chatbot using Gemini API")
@@ -34,7 +37,7 @@ def main():
     
 ### Generate Response from Gemini API ###
 def generate_content(client: genai.Client, messages: list[types.Content]) -> None:
-    response = client.models.generate_content(model='gemini-2.5-flash', contents=messages)
+    response = client.models.generate_content(model=model_name, contents=messages, config=types.GenerateContentConfig(system_instruction=system_prompt,  temperature = 0, tools=[available_functions]))
     ### Checking Metadata ###
     if args.verbose:
         if response.usage_metadata is not None:
@@ -43,9 +46,13 @@ def generate_content(client: genai.Client, messages: list[types.Content]) -> Non
             print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
         else: 
             raise RuntimeError("No metadata available.")
-        print("Response:")
     ### Print the Response ###
-    print(response.text)
+    if response.function_calls:
+        for call in response.function_calls:
+            print(f"Calling function: {call.name} with {call.args}")
+    else:
+        print("Response:")
+        print(response.text)
 
 
 if __name__ == "__main__":
